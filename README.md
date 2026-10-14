@@ -12,6 +12,7 @@ Tier 1/2/3 reserved slots and live seeding calls (8 AM Eastern, below 20 players
 
 The companion needs its own Discord application and environment configuration; it is not
 enabled by the standard Compose file. See its [setup guide](discord/README.md) before deploying.
+For Windows development on this PC, see [the local setup guide](docs/colosseum-local.md).
 Upstream WARCON documentation and licensing follow below.
 
 # Warcon
