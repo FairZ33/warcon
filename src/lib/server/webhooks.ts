@@ -83,7 +83,7 @@ function parseTriggerKinds(raw: unknown): TriggerKind[] | null {
 
 function parseStyle(raw: unknown): StatusStyle {
 	if (!isStatusStyle(raw))
-		throw new ApiError(400, 'Pick a card style: banner, compact or scoreboard.');
+		throw new ApiError(400, 'Pick a card style: banner, compact, scoreboard or colosseum.');
 	return raw;
 }
 

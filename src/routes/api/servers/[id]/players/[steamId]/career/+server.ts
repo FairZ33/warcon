@@ -15,6 +15,7 @@ export const GET = route(async (event) => {
 		'server.view'
 	);
 	const steamId = requireSteamId(param(event, 'steamId'));
+	const scope = event.url.searchParams.get('scope') === 'server' ? 'server' : 'org';
 	const visible = (await accessibleServers(env, user, server.orgId)).filter(
 		(s) => s.orgId === server.orgId
 	);
@@ -23,7 +24,8 @@ export const GET = route(async (event) => {
 		orgId: server.orgId,
 		ids: visible.map((s) => s.id),
 		nameOf: new Map(visible.map((s) => [s.id, s.name])),
-		steamId
+		steamId,
+		scope
 	});
-	return apiJson({ ok: true, career });
+	return apiJson({ ok: true, scope, career });
 });

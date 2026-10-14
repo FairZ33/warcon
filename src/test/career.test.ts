@@ -24,6 +24,64 @@ describe.skipIf(!hasTestDb)('career and boards from the match rows', () => {
 		{ name: 'Wagner', score: 40 }
 	];
 
+	test('server-scoped careers exclude matches on other visible servers without widening access', async () => {
+		const w = await seedWorld(env);
+		const [here, elsewhere] = await env.db
+			.insert(matches)
+			.values([
+				{
+					serverId: w.server.id,
+					startedAt: new Date(Date.now() - HOUR),
+					endedAt: new Date(),
+					map: 'Kavkazi'
+				},
+				{
+					serverId: w.otherServer.id,
+					startedAt: new Date(Date.now() - HOUR),
+					endedAt: new Date(),
+					map: 'Kavkazi'
+				}
+			])
+			.returning({ id: matches.id });
+		await env.db.insert(matchPlayers).values([
+			{
+				matchId: here.id,
+				serverId: w.server.id,
+				steamId: STEAM,
+				name: 'Gladiator',
+				faction: 'Lonestar',
+				seconds: 600,
+				kills: 5,
+				deaths: 2
+			},
+			{
+				matchId: elsewhere.id,
+				serverId: w.otherServer.id,
+				steamId: STEAM,
+				name: 'Gladiator',
+				faction: 'Lonestar',
+				seconds: 600,
+				kills: 50,
+				deaths: 10
+			}
+		]);
+		const options = {
+			serverId: w.server.id,
+			orgId: w.org.id,
+			ids: [w.server.id, w.otherServer.id],
+			nameOf: new Map<string, string>(),
+			steamId: STEAM
+		};
+		expect((await loadCareer(env, options)).kills).toBe(55);
+		const local = await loadCareer(env, { ...options, scope: 'server' });
+		expect(local.kills).toBe(5);
+		expect(local.deaths).toBe(2);
+		expect(local.last.map((m) => m.serverId)).toEqual([w.server.id]);
+		expect(
+			(await loadCareer(env, { ...options, ids: [w.otherServer.id], scope: 'server' })).matches
+		).toBe(0);
+	});
+
 	test('a line on the holding team has no result; the totals are the scoreboard counters', async () => {
 		const w = await seedWorld(env);
 		const t0 = Date.now() - 10 * HOUR;

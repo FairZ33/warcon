@@ -2,6 +2,7 @@
 branding/png
 build
 bun.lock
+discord/bun.lock
 data
 docs
 drizzle/meta

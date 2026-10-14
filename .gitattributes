@@ -1,0 +1,5 @@
+# Keep source line endings consistent for Prettier and source-scanning tests on Windows.
+* text=auto eol=lf
+*.png binary
+*.webp binary
+*.ttf binary

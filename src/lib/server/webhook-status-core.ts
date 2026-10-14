@@ -252,6 +252,7 @@ export function buildStatusEmbed(
 
 function buildBody(opts: StatusOptions, server: StatusServer, live: LiveView | null): Embed {
 	const https = opts.origin.startsWith('https://');
+	const colosseum = opts.style === 'colosseum';
 	const base: Embed = {
 		title: clip(server.name, 200),
 		description: '',
@@ -261,8 +262,9 @@ function buildBody(opts: StatusOptions, server: StatusServer, live: LiveView | n
 			name: clip(opts.orgName, 200),
 			...(https ? { icon_url: `${opts.origin}/icon-192.png` } : {})
 		},
-		footer: { text: opts.appName }
+		footer: { text: colosseum ? 'THE COLOSSEUM • CLAN MAGNUS LEGIO' : opts.appName }
 	};
+	if (colosseum) base.author = { name: 'Clan Magnus Legio', url: 'https://magnuslegio.com' };
 	// The join code (GET /v1/server-id, CL-501228+) as a code block: Discord gives those a copy
 	// button on hover (desktop) and copy on long-press (mobile), the nearest thing to click-to-copy.
 	const joinCode: EmbedField[] = live?.gameServerId
@@ -275,9 +277,10 @@ function buildBody(opts: StatusOptions, server: StatusServer, live: LiveView | n
 		const path = firstArt(mapArtCandidates(s.map, s.lighting, variant));
 		return path ? opts.origin + path : null;
 	};
-	if (!live.ok || !s) {
-		const lines = ['🔴 **Unreachable**'];
-		if (live.error) lines.push(clip(live.error, 200));
+	const stale = colosseum && Date.parse(live.statusAt || live.observedAt) < opts.now - 120_000;
+	if (!live.ok || !s || stale) {
+		const lines = [stale ? '⚪ **Waiting for a fresh observation**' : '🔴 **Unreachable**'];
+		if (live.error && !colosseum) lines.push(clip(live.error, 200));
 		if (live.statusAt) lines.push(`Last seen ${relative(live.statusAt)}`);
 		lines.push(`Checked ${relative(live.observedAt)}`);
 		const thumb = art('square');
@@ -346,6 +349,24 @@ function buildBody(opts: StatusOptions, server: StatusServer, live: LiveView | n
 	const thumb = art('square');
 	const withThumb = thumb ? { thumbnail: { url: thumb } } : {};
 	const common = { ...base, color, timestamp: live.observedAt };
+
+	if (style === 'colosseum') {
+		const image = art('wide');
+		return fitEmbed({
+			...common,
+			color: busy ? 0x3d9c45 : 0xf4d447,
+			author: { name: 'Clan Magnus Legio', url: 'https://magnuslegio.com' },
+			description: `${online}\n${where}\n${match}`,
+			fields: [
+				{ name: 'THE BATTLE', value: fitLines(scoreRows), inline: false },
+				...joinCode,
+				{ name: 'THE LEGION', value: '[magnuslegio.com](https://magnuslegio.com)', inline: false },
+				stamp()
+			],
+			footer: { text: 'THE COLOSSEUM • CLAN MAGNUS LEGIO' },
+			...(image ? { image: { url: image } } : {})
+		});
+	}
 
 	if (style === 'compact') {
 		const top = [...players].sort(byKills).slice(0, 3);
@@ -424,6 +445,7 @@ function substance(server: StatusServer, live: LiveView | null, now: number): un
 		server.id,
 		server.name,
 		live.gameServerId,
+		live.reservedSlots,
 		// the start time itself (a restart is a new card), and whether the restart note shows
 		restart ? [live.startedAt, restart.due] : null,
 		s.playerCount,
@@ -453,6 +475,11 @@ export function statusMessage(
 		payload: { content: '', embeds: [buildStatusEmbed(opts, server, live)] },
 		key: JSON.stringify([
 			opts.style ?? 'banner',
+			opts.appName,
+			opts.orgName,
+			opts.style === 'colosseum' &&
+				!!live?.observedAt &&
+				Date.parse(live.statusAt || live.observedAt) < opts.now - 120_000,
 			(opts.links ?? []).map((l) => l.url),
 			substance(server, live, opts.now)
 		])

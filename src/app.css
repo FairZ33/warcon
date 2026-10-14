@@ -7,9 +7,8 @@
 @import 'tailwindcss';
 
 /*
- * Warcon "field terminal" tokens, in the Bulkhead Interactive idiom: charcoal panels on
- * near-black, hard 1px black borders, tight corners, tracked uppercase labels in Barlow, and one
- * brass accent. Semantic colours carry state; nothing glows.
+ * Clan Magnus Legio's Colosseum palette: green-tinted black panels, white text, yellow accents
+ * and green state indicators. Keep the existing readable field-terminal layout.
  *
  * Token names are kept generic (ink / mist / accent) so components read the same whatever the skin.
  */
@@ -18,20 +17,20 @@
 	--font-display: 'Barlow Condensed', 'Barlow', 'Segoe UI', system-ui, sans-serif;
 	--font-mono: 'JetBrains Mono Variable', 'Cascadia Code', Consolas, ui-monospace, monospace;
 
-	--color-ink-950: #0f0f12; /* page */
-	--color-ink-900: #1a1a1e; /* panel */
-	--color-ink-800: #26262c; /* raised / hover */
-	--color-ink-700: #2f2f35;
+	--color-ink-950: #080c09; /* page */
+	--color-ink-900: #111a13; /* panel */
+	--color-ink-800: #1d2a20; /* raised / hover */
+	--color-ink-700: #2d3c30;
 
-	--color-mist-100: #e8e8e8;
+	--color-mist-100: #f5f7f5;
 	--color-mist-400: #8a8a90;
 	--color-mist-600: #55555c;
 
-	--color-accent: #d4a843; /* brass */
-	--color-accent-2: #e6c56a; /* brass, lit */
-	--color-lilac: #d4a843; /* legacy alias: accent text */
-	--color-ok: #7bc462;
-	--color-warn: #d4a843;
+	--color-accent: #f4d447; /* legion yellow */
+	--color-accent-2: #ffe57c;
+	--color-lilac: #f4d447; /* legacy alias: accent text */
+	--color-ok: #69be70;
+	--color-warn: #f4d447;
 	--color-danger: #d86060;
 	--color-info: #5b95d8;
 	--color-override: #9b7fd4;
