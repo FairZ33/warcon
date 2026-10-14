@@ -18,7 +18,17 @@ test('browser flow requires same-origin POST and cookie; only the Discord owner 
 	const token = store.begin('member1');
 	const origin = server.url.origin;
 	try {
-		expect((await fetch(origin + '/link?token=' + token)).status).toBe(200);
+		const landing = await fetch(origin + '/link?token=' + token);
+		expect(landing.status).toBe(200);
+		expect(landing.headers.get('referrer-policy')).toBe('same-origin');
+		expect(landing.headers.get('content-security-policy')).toContain(
+			"form-action 'self' https://steamcommunity.com;"
+		);
+		for (const headers of [new Headers({ Origin: 'null' }), new Headers()]) {
+			expect(
+				(await fetch(origin + '/steam/start?token=' + token, { method: 'POST', headers })).status
+			).toBe(403);
+		}
 		expect(
 			(
 				await fetch(origin + '/steam/start?token=' + token, {

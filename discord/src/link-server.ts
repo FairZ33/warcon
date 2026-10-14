@@ -6,9 +6,11 @@ import { loginUrl, verifySteam } from './steam';
 const headers = {
 	'Content-Type': 'text/html; charset=utf-8',
 	'Cache-Control': 'no-store',
-	'Referrer-Policy': 'no-referrer',
+	// no-referrer turns a native form POST's Origin into null in browsers. Preserve the
+	// same-site origin for our CSRF check; send no referrer to the Steam redirect.
+	'Referrer-Policy': 'same-origin',
 	'Content-Security-Policy':
-		"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+		"default-src 'none'; style-src 'unsafe-inline'; form-action 'self' https://steamcommunity.com; frame-ancestors 'none'; base-uri 'none'",
 	'X-Content-Type-Options': 'nosniff'
 };
 const html = (body: string) =>
