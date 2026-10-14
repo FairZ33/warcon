@@ -12,7 +12,7 @@
 				<div class="font-display text-2xl font-semibold tracking-[0.08em] uppercase">
 					{data.appName}
 				</div>
-				<div class="caps text-mist-400">Server administration</div>
+				<div class="caps text-mist-400">Clan Magnus Legio · Server administration</div>
 			</div>
 		</div>
 		<div class="panel p-6 shadow-pop">

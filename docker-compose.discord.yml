@@ -1,0 +1,22 @@
+# Opt-in companion: docker compose -f docker-compose.yml -f docker-compose.discord.yml up -d
+services:
+  discord:
+    build: ./discord
+    env_file: ./discord/.env
+    environment:
+      WARCON_URL: http://warcon:3000
+      LINK_HOST: 0.0.0.0
+      LINK_PORT: 3100
+      BOT_DATABASE: /app/data/colosseum.sqlite
+    # Expose only to a reverse proxy on the Docker host. Configure HTTPS at LINK_ORIGIN.
+    ports:
+      - '127.0.0.1:3100:3100'
+    volumes:
+      - colosseum-discord-data:/app/data
+    depends_on:
+      warcon:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  colosseum-discord-data:

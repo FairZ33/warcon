@@ -1,9 +1,18 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="branding/warcon-logo-on-dark.svg">
-    <img src="branding/warcon-logo-on-light.svg" alt="Warcon" height="72">
-  </picture>
+  <img src="static/colosseum-logo.svg" alt="The Colosseum · Clan Magnus Legio" height="100">
 </p>
+
+# The Colosseum · Clan Magnus Legio
+
+This is [FairZ33's WARCON fork](https://github.com/FairZ33/warcon), customized for **The Colosseum**,
+owned and operated by [Clan Magnus Legio](https://magnuslegio.com). It adds the community's
+green/yellow/black/white theme, a **Colosseum** Discord webhook card style, and an opt-in
+[Discord companion](discord/README.md) for verified Steam linking, leaderboard stats, Donator
+Tier 1/2/3 reserved slots and live seeding calls (8 AM Eastern, below 20 players, stop at 36).
+
+The companion needs its own Discord application and environment configuration; it is not
+enabled by the standard Compose file. See its [setup guide](discord/README.md) before deploying.
+Upstream WARCON documentation and licensing follow below.
 
 # Warcon
 

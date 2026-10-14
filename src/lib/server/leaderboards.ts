@@ -780,17 +780,20 @@ export async function loadCareer(
 		ids: string[];
 		nameOf: Map<string, string>;
 		steamId: string;
+		/** Restrict match totals to this server while retaining the visible organisation rank. */
+		scope?: 'server' | 'org';
 	}
 ): Promise<CareerView> {
 	const { serverId, ids, steamId } = opts;
 	const own = ids.includes(serverId) ? [serverId] : [];
+	const matchIds = opts.scope === 'server' ? own : ids;
 	const [serverRank, orgRank, seasons, linesRaw] = await Promise.all([
 		rankOf(env, own, steamId),
 		rankOf(env, ids, steamId),
 		careerSeasons(env, opts.orgId, own),
-		ids.length
+		matchIds.length
 			? env.db.execute<LineRow>(sql`
-				WITH ${lines(ids, EPOCH, steamId)}
+				WITH ${lines(matchIds, EPOCH, steamId)}
 				SELECT match_id AS "matchId", server_id AS "serverId", started_at AS "startedAt", ended_at AS "endedAt",
 				       map, faction, result, seconds, kills, deaths, cash_delta AS "cashDelta", headshots,
 				       vehicle_kills AS "vehicleKills", longest_m AS "longestM", kill_streak AS "killStreak", death_streak AS "deathStreak"

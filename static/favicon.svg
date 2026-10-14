@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Warcon">
-  <path d="M0 0H48L64 16V64H16L0 48Z" fill="#D4A843"/>
-  <g fill="none" stroke="#0F0F12" stroke-width="5.5" stroke-linecap="square">
-    <circle cx="32" cy="32" r="14.5"/>
-    <path d="M32 6.5v9M32 48.5v9M6.5 32h9M48.5 32h9"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="The Colosseum">
+  <path d="M0 0H48L64 16V64H16L0 48Z" fill="#F4D447"/>
+  <g fill="none" stroke="#080C09" stroke-width="5" stroke-linejoin="round">
+    <path d="M10 52V22L32 12 54 22v30H10ZM10 27h44M22 27v25M42 27v25"/>
+    <path d="M28 52V39a4 4 0 0 1 8 0v13"/>
   </g>
-  <circle cx="32" cy="32" r="3.6" fill="#0F0F12"/>
 </svg>

@@ -13,4 +13,5 @@ build
 .git/refs/*
 !.git/refs/heads
 docs
+discord
 *.md

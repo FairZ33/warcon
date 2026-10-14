@@ -491,3 +491,34 @@ describe('clampInterval', () => {
 		expect(clampInterval(9999)).toBe(300);
 	});
 });
+
+describe('Colosseum card', () => {
+	test('carries community branding, population, scores and existing public links', () => {
+		const e = buildStatusEmbed({ ...opts, style: 'colosseum', links: [panelLink] }, server, live());
+		expect(e.author?.name).toBe('Clan Magnus Legio');
+		expect(e.color).toBe(0x3d9c45);
+		expect(e.description).toContain('6 / 100');
+		expect(e.fields?.some((f) => f.name === 'THE BATTLE')).toBe(true);
+		expect(e.url).toBe(panelLink.url);
+		expect(embedLength(e)).toBeLessThanOrEqual(LIMITS.message);
+	});
+	test('stale data cannot display a live population, and private connection errors stay out of the card', () => {
+		const staleOpts = { ...opts, now: opts.now + 180_000, style: 'colosseum' as const };
+		const e = buildStatusEmbed(staleOpts, server, live());
+		expect(e.description).toContain('fresh observation');
+		expect(e.description).not.toContain('6 / 100');
+		const down = buildStatusEmbed(
+			staleOpts,
+			server,
+			live({ ok: false, error: 'Secret target 10.0.0.1:7776' })
+		);
+		expect(JSON.stringify(down)).not.toContain('10.0.0.1');
+		const original = statusMessage({ ...opts, style: 'colosseum' }, server, live()).key;
+		expect(statusMessage(staleOpts, server, live()).key).not.toBe(original);
+	});
+	test('reserved slots and organisation branding changes trigger message updates', () => {
+		const key = statusMessage(opts, server, live()).key;
+		expect(statusMessage(opts, server, live({ reservedSlots: 10 })).key).not.toBe(key);
+		expect(statusMessage({ ...opts, orgName: 'New name' }, server, live()).key).not.toBe(key);
+	});
+});

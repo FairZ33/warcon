@@ -128,7 +128,7 @@ function serverSources(dir: string): string[] {
 		const path = join(dir, e.name);
 		if (e.isDirectory()) return serverSources(path);
 		if (e.name.endsWith('.test.ts') || !e.name.endsWith('.ts')) return [];
-		const rel = relative(SRC, path);
+		const rel = relative(SRC, path).replaceAll('\\', '/');
 		if (rel.startsWith('routes/'))
 			return /^\+(server|page\.server|layout\.server)\.ts$/.test(e.name) ? [path] : [];
 		return rel.startsWith('lib/server/') || rel.startsWith('worker/') || rel === 'hooks.server.ts'

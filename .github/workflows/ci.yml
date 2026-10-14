@@ -74,6 +74,22 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  discord:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: discord
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun test
+      - name: Build the companion image
+        run: docker build -t colosseum-discord:test .
+
   # Tells the Discord update channel that main has new changes, once they pass. The webhook lives
   # in the DISCORD_WEBHOOK_URL repository secret (Discord: channel settings > Integrations >
   # Webhooks); without it the job does nothing, so forks and pull requests are unaffected.
@@ -82,7 +98,7 @@ jobs:
   # post covers its own push only.
   notify:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [test, docker]
+    needs: [test, docker, discord]
     runs-on: ubuntu-latest
     steps:
       - name: Post the pushed commits to Discord
